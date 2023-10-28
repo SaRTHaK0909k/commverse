@@ -1,29 +1,24 @@
 "use client";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
 import Logo from "./Logo";
 import { Heart, ShoppingBagIcon } from "lucide-react";
-import Link from "next/link";
-import { log } from "console";
+import { usePathname } from "next/navigation";
+import { navigation } from "@/constants/data";
+import { signIn, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const pathname = usePathname();
-  console.log(pathname);
-
-  const Navigation = [
-    { _id: 910, title: "Home", href: "/" },
-    { _id: 911, title: "Phones", href: "/Phones" },
-    { _id: 912, title: "Phone cases", href: "/phonecases" },
-    { _id: 913, title: "Watches", href: "/watches" },
-    { _id: 914, title: "Accessories", href: "/accessories" },
-  ];
+  const { data: session } = useSession();
 
   return (
-    <div className="w-full h-20 border-b-[1px] border-b-zinc-500 bg-white text-zinc-600">
+    <div className="w-full h-20 border-b-[1px] border-b-zinc-500 bg-white text-zinc-600 sticky top-0 z-50 bg-white/80 backdrop-blur-2xl">
       <div className="max-w-screen-xl mx-auto h-full flex items-center justify-between px-4 xl:px-0">
+        {/* Logo */}
         <Logo />
-        <ul className=" hidden md:flex items-center gap-5 text-sm uppercase font-semibold space-x-4">
-          {Navigation.map((item) => (
-            <Link href={item?.href}>
+        {/* Navigation */}
+        <ul className="hidden md:flex items-center gap-5 text-sm uppercase font-semibold">
+          {navigation.map((item) => (
+            <Link href={item?.href} key={item._id}>
               <li
                 className={`hover:text-black cursor-pointer duration-200 relative overflow-hidden group ${
                   item.href === pathname && "text-designColor"
@@ -39,8 +34,9 @@ const Navbar = () => {
             </Link>
           ))}
         </ul>
-        <div className="flex space-x-5 items-center">
-        <Link
+        {/* icons */}
+        <div className="flex items-center gap-x-5">
+          <Link
             href={"/wishlist"}
             className="hover:text-black cursor-pointer duration-200 relative group"
           >
@@ -49,9 +45,8 @@ const Navbar = () => {
               0
             </span>
           </Link>
-
           <Link
-            href={"/shoppingcart"}
+            href={"/cart"}
             className="hover:text-black cursor-pointer duration-200 relative group"
           >
             <ShoppingBagIcon className="w-7 h-7" />
@@ -59,8 +54,23 @@ const Navbar = () => {
               0
             </span>
           </Link>
-          
-
+          {session ? (
+            <Link
+              href={"/profile"}
+              className="hover:text-black cursor-pointer duration-200 relative overflow-hidden group text-sm uppercase font-semibold"
+            >
+              Profile
+              <span className="absolute h-[1px] w-full bg-blue-700 left-0 bottom-0 -translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500" />
+            </Link>
+          ) : (
+            <button
+              onClick={() => signIn()}
+              className="hover:text-black cursor-pointer duration-200 relative overflow-hidden group text-sm uppercase font-semibold"
+            >
+              Login
+              <span className="absolute h-[1px] w-full bg-blue-700 left-0 bottom-0 -translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500" />
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -3,7 +3,9 @@ import Image from 'next/image'
 export default function Home() {
   return (
     <>
-    dfads
+    <main>
+      New Ecommerce Website
+    </main>
     </>
   )
 }
